@@ -93,6 +93,48 @@ def skyline_naif(immeubles):
     return skyline
 
 
+# QUESTION 6
+def fusion_skylines(skyline1, skyline2):
+    skyline = []
+    i = 0
+    j = 0
+    while i < len(skyline1) and j < len(skyline2):
+        if skyline1[i][0] < skyline2[j][0]:
+            skyline.append(skyline1[i])
+            i += 1
+        elif skyline1[i][0] > skyline2[j][0]:
+            skyline.append(skyline2[j])
+            j += 1
+        else:
+            if skyline1[i][1] > skyline2[j][1]:
+                skyline.append(skyline1[i])
+            else:
+                skyline.append(skyline2[j])
+            i += 1
+            j += 1
+    if i < len(skyline1):
+        skyline += skyline1[i:]
+    if j < len(skyline2):
+        skyline += skyline2[j:]
+    return skyline
+
+
+
+# QUESTION 7
+def skyline_dpr(immeubles):
+    skyline = []
+    if len(immeubles) == 1:
+        (x0, h, x1) = immeubles[0]
+        skyline.append((x0, h))
+        skyline.append((x1, 0))
+        return skyline
+    else:
+        skyline1 = skyline_dpr(immeubles[:len(immeubles)//2])
+        skyline2 = skyline_dpr(immeubles[len(immeubles)//2:])
+        return fusion_skylines(skyline1, skyline2)
+    
+
+
 if __name__ == "__main__":
     a = "###############*"
     print(cherche_etoile(a))
@@ -108,7 +150,9 @@ if __name__ == "__main__":
     print("Exp :" + str(time.time() - now))
 
 
-    immeubles= [(3,13,9),(1,11,5),(12,7,16),(14,3,25),(19,18,22),(2,6,7),(23,13,29),(23,4,28)]
+    immeubles= [(3,13,5),(1,11,5),(12,7,16),(14,3,25),(19,18,22),(2,6,7),(23,13,29),(23,4,28)]
     skyline =  [(1,11),(3,13),(9,0),(12,7),(16,3),(19,18),(22,3),(23,13),(29,0)]
 
     show(immeubles,skyline_naif(immeubles))
+    show(immeubles,fusion_skylines(skyline_naif(immeubles), skyline_naif(immeubles)))
+    # show(immeubles,skyline_dpr(immeubles))
